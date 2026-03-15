@@ -1,21 +1,12 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { verifyToken } from "../lib/jwt";
-
-
-interface AuthRequest extends Request {
-  user?: {
-    userId: number;
-    tenantId: number;
-    permissions: string[];
-  };
-}
-
+import { AuthRequest } from "../types";
 
 const authMiddleware = (
   req: AuthRequest,
   res: Response,
   next: NextFunction,
-) => {
+): void => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {

@@ -1,15 +1,8 @@
-import { Request, Response, NextFunction } from "express";
-
-interface AuthRequest extends Request {
-  user?: {
-    userId: number;
-    tenantId: number;
-    permissions: string[];
-  };
-}
+import { Response, NextFunction } from "express";
+import { AuthRequest } from "../types";
 
 export const requirePermission = (permission: string) => {
-  return (req:AuthRequest, res:Response, next:NextFunction) => {
+  return (req: AuthRequest, res: Response, next: NextFunction) => {
     if (!req.user?.permissions.includes(permission)) {
       return res.status(403).json({ message: "Forbidden" });
     }

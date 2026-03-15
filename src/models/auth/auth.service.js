@@ -1,10 +1,11 @@
 import prisma from '../../../prisma/client.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { hashPassword } from '../../lib/hash.ts';
+import { hashPassword, comparePassword } from '../../lib/hash.ts';
+import { generateToken } from '../../lib/jwt.ts';
 
 
-const createUserByAdmin = async ({
+const register = async ({
     name,
     email,
     password,
@@ -72,7 +73,7 @@ const createUserByAdmin = async ({
 };
 
 
-export async function login(email, password) {
+const login = async ({ email, password }) => {
     const user = await prisma.user.findUnique({
         where: { email },
         include: {
@@ -102,9 +103,13 @@ export async function login(email, password) {
     }
 
     // Flatten permissions
-    const permissions = user.UserRoles.flatMap((ur) =>
-        ur.role.rolePermissions.map((rp) => rp.permission.name)
-    );
+    const permissions = [
+        ...new Set(
+            user.UserRoles.flatMap((ur) =>
+                ur.role.rolePermissions.map((rp) => rp.permission.name)
+            )
+        )
+    ];
 
     const token = generateToken({
         userId: user.id,
