@@ -1,4 +1,4 @@
-import prisma from '../../../prisma/client.js';
+import prisma from '../../lib/client.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { hashPassword, comparePassword } from '../../lib/hash.ts';
